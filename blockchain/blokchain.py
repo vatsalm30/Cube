@@ -53,7 +53,7 @@ class Blockchain():
             return
 
     def create_genesis(self):
-        block = Block(1, "", [])
+        block = Block(1, '', [])
         block.nonce
         self.minePendingTransactions("", block)
         self.blockchain.append(block)
@@ -62,7 +62,7 @@ class Blockchain():
         blocks = {}
 
         for block in self.blockchain:
-            blocks['block'+block.block_location] = {
+            blocks['block'+str(block.block_location)] = {
                 'hash': block.hash
             }
 

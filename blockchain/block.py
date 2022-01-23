@@ -14,7 +14,7 @@ class Block():
         self.hash = self.calculate_hash()
 
     def find_encoded_string_of_transactions(self):
-        result = ''
+        result = b''
         for txn in self.transactions:
             result = str(txn.hash).encode('utf-8') + str(txn.sender).encode('utf-8') + str(txn.reciver).encode('utf-8') + str(txn.time).encode(
                 'utf-8') + str(txn.amt).encode('utf-8') + str(txn.txn_location).encode('utf-8')

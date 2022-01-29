@@ -1,6 +1,6 @@
 import json
-from block import Block
-from transaction import Transaction
+from block import *
+from transaction import *
 import time
 
 
@@ -31,16 +31,13 @@ class Blockchain():
 
     def minePendingTransactions(self, miner, newBlock):
         newBlock.mineBlock()
-
+        newBlock.is_valid = True
         return True
 
     def txn(self, sender, reciver, amt):
         txn = Transaction(sender, reciver, amt, len(self.transactions) + 1)
-        if self.can_create_block and self.can_add_txn == False:
+        if self.can_create_block and self.can_add_txn == False and txn.is_valid:
             self.create_block(txn)
-            return
-        if self.can_add_txn and self.can_create_block == False:
-            self.transactions_for_block.append(txn)
             return
 
     def create_genesis(self):
@@ -58,7 +55,8 @@ class Blockchain():
             'prev_hash': block.prev_hash,
             'nonce': block.nonce,
             'time_stamp': block.time,
-            'block_number': block.block_location
+            'block_number': block.block_location,
+            'is_valid': block.is_valid
         }
 
         for transactions in block.transactions:
@@ -69,6 +67,7 @@ class Blockchain():
                 'amount': transactions.amt,
                 'hash': transactions.hash,
                 'time_stamp': transactions.time,
+                'is_valid': transactions.is_valid,
                 'block_number': block.block_location
             }
             with open('data.json', mode='r+', encoding='utf-8') as data:
@@ -91,7 +90,9 @@ class Blockchain():
 
 
 b = Blockchain()
-b.create_genesis()
-b.txn("Billy", "Bobby", 10)
-b.txn("Vatsal", "Maira", 15)
+# b.create_genesis()
+b.txn("1Byp3v4DFybN7DdWxwwHvYLj4chArRbm4f",
+      "1J8kRAgf3G4DoDAtkfKk2ZPxPwpERCvCBj", 15)
+b.txn("1J8kRAgf3G4DoDAtkfKk2ZPxPwpERCvCBj",
+      "1Byp3v4DFybN7DdWxwwHvYLj4chArRbm4f", 15)
 b.json_get_last_block()

@@ -11,6 +11,7 @@ class Block():
         self.time = int(self.time.timestamp())
         self.transactions = transactions
         self.hash = self.calculate_hash()
+        self.is_valid = False
 
     def find_encoded_string_of_transactions(self):
         result = b''
@@ -35,12 +36,9 @@ class Block():
 
     def mineBlock(self):
         hash_puzzle = "ac312"
-        # print(len(hashPuzzle));
         while self.hash[0:len(hash_puzzle)] != hash_puzzle:
             self.nonce += 1
             self.hash = self.calculate_hash()
-            # print(len(hash_puzzle))
-            # print(self.hash[0:difficulty])
-            # print(self.hash)
+
         print("Block Mined!")
         return True

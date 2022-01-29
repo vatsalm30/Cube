@@ -8,16 +8,19 @@ def create_keys():
 
 
 def sign_txn(address, priv_key):
-    if len(priv_key) != 64:
-        print("error")
-        return False
     check_add = pubtoaddr(privtopub(priv_key))
     if check_add == address:
         return True
-    else:
-        return False
+    return False
 
 
-priv_key, address = create_keys()
+def check_length(key, public):
+    if public:
+        if len(key) != 34:
+            return False
+        return True
 
-print(sign_txn(address, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+    if (public != True):
+        if len(key) != 64:
+            return False
+        return True

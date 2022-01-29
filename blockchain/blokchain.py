@@ -20,27 +20,18 @@ class Blockchain():
         self.can_add_txn = False
         self.can_create_block = True
         self.transactions_for_block.append(txn)
-        block = Block(len(self.blockchain) + 1,
-                      self.blockchain[len(self.blockchain)-1].hash, self.transactions_for_block)
+        prev_block = self.json_get_last_block()
+        block = Block(prev_block["block_number"]+1, prev_block["hash"],
+                      self.transactions_for_block)
 
         self.minePendingTransactions("", block)
-        for txn in self.transactions_for_block:
-            self.transactions.append(txn)
         self.transactions_for_block = []
+        self.json_encode(block)
         self.can_create_block = True
 
     def minePendingTransactions(self, miner, newBlock):
-
-        # transactionSlice = self.pendingTransactions[i:end]
-
-        # newBlock = Block(transactionSlice, datetime.now().strftime(
-        # "%m/%d/%Y, %H:%M:%S"), len(self.chain))
-        # print(type(self.getLastBlock()));
         newBlock.mineBlock()
-        self.blockchain.append(newBlock)
 
-        # payMiner = Transaction("Miner Rewards", miner, self.minerRewards)
-        # self.pendingTransactions = [payMiner]
         return True
 
     def txn(self, sender, reciver, amt):
@@ -56,33 +47,51 @@ class Blockchain():
         block = Block(1, '', [])
         block.nonce
         self.minePendingTransactions("", block)
-        self.blockchain.append(block)
+        self.json_encode(block)
 
-    def json_encode(self):
+    def json_encode(self, block):
         blocks = {}
+        txn = {}
 
-        for block in self.blockchain:
-            blocks['block'+str(block.block_location)] = {
-                'hash': block.hash
+        blocks['block'] = {
+            'hash': block.hash,
+            'prev_hash': block.prev_hash,
+            'nonce': block.nonce,
+            'time_stamp': block.time,
+            'block_number': block.block_location
+        }
+
+        for transactions in block.transactions:
+
+            txn['transaction'] = {
+                'sender': transactions.sender,
+                'reciver': transactions.reciver,
+                'amount': transactions.amt,
+                'hash': transactions.hash,
+                'time_stamp': transactions.time,
+                'block_number': block.block_location
             }
+            with open('data.json', mode='r+', encoding='utf-8') as data:
+                txn_data = json.load(data)
+                txn_data["transactions"].append(txn)
+                data.seek(0)
+                json.dump(txn_data, data, indent=4)
+            transactions = 0
 
-        s = json.dumps(blocks)
+        with open('data.json', mode='r+', encoding='utf-8') as data:
+            block_data = json.load(data)
+            block_data["blocks"].append(blocks)
+            data.seek(0)
+            json.dump(block_data, data, indent=4)
 
-        print(s)
-
-        self.blockchain = []
+    def json_get_last_block(self):
+        with open('data.json', mode='r', encoding='utf-8') as data:
+            blocks = json.load(data)
+            return blocks['blocks'][-1]['block']
 
 
 b = Blockchain()
 b.create_genesis()
 b.txn("Billy", "Bobby", 10)
 b.txn("Vatsal", "Maira", 15)
-b.json_encode()
-
-for block in b.blockchain:
-    print(block.__str__())
-    for txn in block.transactions:
-        print(txn.__str__())
-    print()
-    print()
-print(b.transactions[1].__str__())
+b.json_get_last_block()

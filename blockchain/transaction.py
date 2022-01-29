@@ -7,6 +7,7 @@ class Transaction():
         self.sender = sender
         self.reciver = reciver
         self.time = datetime.now()
+        self.time = int(self.time.timestamp())
         self.amt = amt
         self.txn_location = txn_location
         self.hash = self.calculate_hash()

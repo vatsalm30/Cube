@@ -1,6 +1,5 @@
 import hashlib
 from datetime import datetime
-import random
 
 
 class Block():
@@ -35,7 +34,7 @@ class Block():
         return "Block Hash: " + str(self.hash) + "\nPrevious Block Hash: " + str(self.prev_hash) + "\nBlockNo: " + str(self.block_location) + "\nNonce: " + str(self.nonce) + "\n--------------"
 
     def mineBlock(self):
-        hash_puzzle = "2022"
+        hash_puzzle = "ac312"
         # print(len(hashPuzzle));
         while self.hash[0:len(hash_puzzle)] != hash_puzzle:
             self.nonce += 1
